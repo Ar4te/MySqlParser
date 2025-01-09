@@ -5,11 +5,13 @@ public class Parser
 {
     private readonly List<Token> _tokens;
     private int _position;
+    private SqlCorrector _corrector;
 
     public Parser(List<Token> tokens)
     {
         _tokens = tokens;
         _position = 0;
+        _corrector = new SqlCorrector();
     }
 
     public void Parse()
@@ -24,25 +26,7 @@ public class Parser
 
     public string CorrectSyntax()
     {
-        var tokens = new List<Token>(_tokens);
-        for (int i = 0; i < tokens.Count; i++)
-        {
-            if (tokens[i].Type == TokenType.Identifier && tokens[i].Value.Equals("SELCT", StringComparison.OrdinalIgnoreCase))
-            {
-                tokens[i].Value = "SELECT";
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Error: Did you mean 'SELECT'?");
-                Console.ResetColor();
-            }
-            if (tokens[i].Type == TokenType.Identifier && tokens[i].Value.Equals("FORM", StringComparison.OrdinalIgnoreCase))
-            {
-                tokens[i].Value = "FROM";
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Error: Did you mean 'FROM'?");
-                Console.ResetColor();
-            }
-        }
-
+        var tokens = _corrector.CorrectTokens(_tokens);
         return string.Join(" ", tokens.Select(t => t.Value));
     }
 }

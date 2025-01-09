@@ -4,17 +4,19 @@ namespace MySqlParser;
 
 public partial class Lexer
 {
-    private readonly Dictionary<string, TokenType> _keywords = new()
+    public static readonly Dictionary<string, TokenType> _keywords = new()
     {
         { "SELECT", TokenType.Keyword },
         { "FROM", TokenType.Keyword },
         { "WHERE", TokenType.Keyword },
         { "INSERT", TokenType.Keyword },
+        { "INSERT INTO", TokenType.Keyword },
         { "INTO", TokenType.Keyword },
         { "VALUES", TokenType.Keyword },
         { "UPDATE", TokenType.Keyword },
         { "SET", TokenType.Keyword },
-        { "DELETE", TokenType.Keyword }
+        { "DELETE", TokenType.Keyword },
+        { "AS", TokenType.AssociateKeyword },
     };
 
     private static readonly char[] _splitFlags = [' ', '\t', '\n', '\r', ',', ';'];
@@ -27,9 +29,9 @@ public partial class Lexer
         {
             if (string.IsNullOrWhiteSpace(part)) continue;
 
-            if (_keywords.TryGetValue(part.ToUpper(), out _))
+            if (_keywords.TryGetValue(part.ToUpper(), out var tokenType))
             {
-                tokens.Add(Token.New(TokenType.Keyword, part.ToUpper()));
+                tokens.Add(Token.New(tokenType, part.ToUpper()));
             }
             else if (DigitRegex().IsMatch(part))
             {

@@ -20,6 +20,7 @@ public sealed class Token
     }
 }
 
+[Flags]
 public enum TokenType
 {
     Keyword,
@@ -27,5 +28,6 @@ public enum TokenType
     Operator,
     Literal,
     Punctuation,
-    Unknown
+    Unknown,
+    AssociateKeyword
 }

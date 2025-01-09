@@ -2,7 +2,7 @@
 
 //string sqlQuery = "SELCT `age` as 'Age, [id as [ID], [username] as [UserName] FORM users WHERE [id]= 1";
 
-string sqlInsert = """Insert into TEST set (id,age,username) values (1,2,"3")""";
+string sqlInsert = """Iert into TEST set (id,age,username) values (1,2,"3")""";
 
 var lexer = new Lexer();
 var tokens = lexer.Tokenize(sqlInsert);
