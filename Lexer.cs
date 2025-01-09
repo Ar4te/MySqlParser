@@ -2,27 +2,26 @@ using System.Text.RegularExpressions;
 
 namespace MySqlParser;
 
-public class Lexer
+public partial class Lexer
 {
-    private static readonly Dictionary<string, TokenType> _keywords = new()
+    private readonly Dictionary<string, TokenType> _keywords = new()
     {
-        {"SELECT", TokenType.Keyword},
-        {"FROM", TokenType.Keyword},
-        {"WHERE", TokenType.Keyword},
-        {"INSERT", TokenType.Keyword},
-        {"INTO", TokenType.Keyword},
-        {"VALUES", TokenType.Keyword},
-        {"UPDATE", TokenType.Keyword},
-        {"SET", TokenType.Keyword},
-        {"DELETE", TokenType.Keyword}
+        { "SELECT", TokenType.Keyword },
+        { "FROM", TokenType.Keyword },
+        { "WHERE", TokenType.Keyword },
+        { "INSERT", TokenType.Keyword },
+        { "INTO", TokenType.Keyword },
+        { "VALUES", TokenType.Keyword },
+        { "UPDATE", TokenType.Keyword },
+        { "SET", TokenType.Keyword },
+        { "DELETE", TokenType.Keyword }
     };
 
     private static readonly char[] _splitFlags = [' ', '\t', '\n', '\r', ',', ';'];
     public List<Token> Tokenize(string originSql)
     {
         var tokens = new List<Token>();
-        //var parts = originSql.Split(_splitFlags, StringSplitOptions.RemoveEmptyEntries);
-        string[] parts = Regex.Split(originSql, @"(\s+|=|,|;|\(|\))");
+        string[] parts = SplitRegex().Split(originSql);
 
         foreach (var part in parts)
         {
@@ -30,22 +29,31 @@ public class Lexer
 
             if (_keywords.TryGetValue(part.ToUpper(), out _))
             {
-                tokens.Add(new Token(TokenType.Keyword, part.ToUpper()));
+                tokens.Add(Token.New(TokenType.Keyword, part.ToUpper()));
             }
-            else if (Regex.IsMatch(part, @"^\d+$"))
+            else if (DigitRegex().IsMatch(part))
             {
-                tokens.Add(new Token(TokenType.Literal, part));
+                tokens.Add(Token.New(TokenType.Literal, part));
             }
-            else if (Regex.IsMatch(part, @"[(),;]"))
+            else if (PunctuationRegex().IsMatch(part))
             {
-                tokens.Add(new Token(TokenType.Punctuation, part));
+                tokens.Add(Token.New(TokenType.Punctuation, part));
             }
             else
             {
-                tokens.Add(new Token(TokenType.Identifier, part));
+                tokens.Add(Token.New(TokenType.Identifier, part));
             }
         }
 
         return tokens;
     }
+
+    [GeneratedRegex(@"^\d+$", RegexOptions.Compiled)]
+    private static partial Regex DigitRegex();
+
+    [GeneratedRegex(@"(\s+|=|,|;|\(|\))", RegexOptions.Compiled)]
+    private static partial Regex SplitRegex();
+
+    [GeneratedRegex(@"[(),;]", RegexOptions.Compiled)]
+    private static partial Regex PunctuationRegex();
 }

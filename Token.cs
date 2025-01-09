@@ -1,11 +1,23 @@
+
 namespace MySqlParser;
 
-public class Token(TokenType type, string value)
+public sealed class Token
 {
-    public TokenType Type { get; set; } = type;
-    public string Value { get; set; } = value;
+    private Token(TokenType type, string value)
+    {
+        Type = type;
+        Value = value;
+    }
+
+    public TokenType Type { get; set; }
+    public string Value { get; set; }
 
     public override string ToString() => $"{Type}: {Value}";
+
+    public static Token New(TokenType type, string value)
+    {
+        return new Token(type, value);
+    }
 }
 
 public enum TokenType

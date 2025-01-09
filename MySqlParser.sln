@@ -5,6 +5,8 @@ VisualStudioVersion = 17.12.35527.113 d17.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MySqlParser", "MySqlParser.csproj", "{A95F88E1-661C-44EA-A5E7-AD12A50B148C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MySqlParser.Tests", "..\MySqlParser.Tests\MySqlParser.Tests.csproj", "{AAF63FC0-FCAB-4A01-8013-EEEAE5A9E32F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{A95F88E1-661C-44EA-A5E7-AD12A50B148C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A95F88E1-661C-44EA-A5E7-AD12A50B148C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A95F88E1-661C-44EA-A5E7-AD12A50B148C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AAF63FC0-FCAB-4A01-8013-EEEAE5A9E32F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AAF63FC0-FCAB-4A01-8013-EEEAE5A9E32F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AAF63FC0-FCAB-4A01-8013-EEEAE5A9E32F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AAF63FC0-FCAB-4A01-8013-EEEAE5A9E32F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

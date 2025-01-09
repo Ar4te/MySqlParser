@@ -22,8 +22,9 @@ public class Parser
         }
     }
 
-    public static string CorrectSyntax(List<Token> tokens)
+    public string CorrectSyntax()
     {
+        var tokens = new List<Token>(_tokens);
         for (int i = 0; i < tokens.Count; i++)
         {
             if (tokens[i].Type == TokenType.Identifier && tokens[i].Value.Equals("SELCT", StringComparison.OrdinalIgnoreCase))
