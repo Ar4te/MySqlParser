@@ -13,9 +13,11 @@ public class FuzzyKeywordCorrectionRule : ISqlCorrectionRule
         if (isKeywordContext) return false;
 
         string tokenValue = token.Value.ToUpper();
+        var _bestSimilarity = 0.0;
         foreach (var keyword in Lexer._keywords.Keys)
         {
             double similarity = CalculateSimilarity(tokenValue, keyword);
+            _bestSimilarity = similarity > _bestSimilarity ? similarity : _bestSimilarity;
             if (similarity > Threshold)
             {
                 return true;

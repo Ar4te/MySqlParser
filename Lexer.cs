@@ -10,7 +10,6 @@ public partial class Lexer
         { "FROM", TokenType.Keyword },
         { "WHERE", TokenType.Keyword },
         { "INSERT", TokenType.Keyword },
-        { "INSERT INTO", TokenType.Keyword },
         { "INTO", TokenType.Keyword },
         { "VALUES", TokenType.Keyword },
         { "UPDATE", TokenType.Keyword },
@@ -19,7 +18,8 @@ public partial class Lexer
         { "AS", TokenType.AssociateKeyword },
     };
 
-    private static readonly char[] _splitFlags = [' ', '\t', '\n', '\r', ',', ';'];
+    private static readonly char[] _splitFlags = [' ', '\t', '\n', '\r', ',', ';', '[', ']', '"'];
+
     public List<Token> Tokenize(string originSql)
     {
         var tokens = new List<Token>();
@@ -29,22 +29,39 @@ public partial class Lexer
         {
             if (string.IsNullOrWhiteSpace(part)) continue;
 
+            if (CommentRegex().IsMatch(part))
+            {
+                tokens.Add(Token.New(TokenType.Comment, part));
+                continue;
+            }
+
+            if (StringLiteralRegex().IsMatch(part))
+            {
+                var _part = part.Trim(_splitFlags);
+                tokens.Add(Token.New(TokenType.Literal, _part));
+                continue;
+            }
+
             if (_keywords.TryGetValue(part.ToUpper(), out var tokenType))
             {
                 tokens.Add(Token.New(tokenType, part.ToUpper()));
+                continue;
             }
-            else if (DigitRegex().IsMatch(part))
+
+            if (DigitRegex().IsMatch(part))
             {
-                tokens.Add(Token.New(TokenType.Literal, part));
+                var _part = part.Trim(_splitFlags);
+                tokens.Add(Token.New(TokenType.Literal, _part));
+                continue;
             }
-            else if (PunctuationRegex().IsMatch(part))
+
+            if (PunctuationRegex().IsMatch(part))
             {
                 tokens.Add(Token.New(TokenType.Punctuation, part));
+                continue;
             }
-            else
-            {
-                tokens.Add(Token.New(TokenType.Identifier, part));
-            }
+
+            tokens.Add(Token.New(TokenType.Identifier, part));
         }
 
         return tokens;
@@ -56,6 +73,12 @@ public partial class Lexer
     [GeneratedRegex(@"(\s+|=|,|;|\(|\))", RegexOptions.Compiled)]
     private static partial Regex SplitRegex();
 
-    [GeneratedRegex(@"[(),;]", RegexOptions.Compiled)]
+    [GeneratedRegex(@"[(),;=]$", RegexOptions.Compiled)]
     private static partial Regex PunctuationRegex();
+
+    [GeneratedRegex(@"^[`'""\[\]\w]+[`'""\[\]]$", RegexOptions.Compiled)]
+    private static partial Regex StringLiteralRegex();
+
+    [GeneratedRegex(@"--\s*(.*?)\n*", RegexOptions.Compiled)]
+    private static partial Regex CommentRegex();
 }

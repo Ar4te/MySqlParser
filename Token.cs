@@ -29,5 +29,6 @@ public enum TokenType
     Literal,
     Punctuation,
     Unknown,
-    AssociateKeyword
+    AssociateKeyword,
+    Comment
 }

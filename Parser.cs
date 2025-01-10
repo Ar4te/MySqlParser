@@ -1,32 +1,53 @@
 
+using System.Text;
+
 namespace MySqlParser;
 
 public class Parser
 {
-    private readonly List<Token> _tokens;
-    private int _position;
+    private List<Token> _tokens;
     private SqlCorrector _corrector;
+    private bool _hasCorrectSyntax = false;
+
+    public List<Token> Tokens => _tokens;
 
     public Parser(List<Token> tokens)
     {
+        _hasCorrectSyntax = false;
         _tokens = tokens;
-        _position = 0;
         _corrector = new SqlCorrector();
     }
 
-    public void Parse()
+    public string Parse()
     {
-        while (_position < _tokens.Count)
+        var tokens = _hasCorrectSyntax ? _tokens : CorrectSyntax();
+        StringBuilder @stringBuilder = new();
+        foreach (var token in tokens)
         {
-            var token = _tokens[_position];
-            Console.WriteLine($"Token: {token.Type},Value: {token.Value}");
-            _position++;
+            if (token.Type == TokenType.Literal)
+            {
+                if (token.Value.GetType() == typeof(long))
+                {
+                    stringBuilder.Append($" {token.Value} ");
+                }
+                else
+                {
+                    stringBuilder.Append($" \"{token.Value}\" ");
+                }
+            }
+            else
+            {
+                stringBuilder.Append($" {token.Value} ");
+            }
         }
+
+        return @stringBuilder.ToString();
     }
 
-    public string CorrectSyntax()
+    public List<Token> CorrectSyntax()
     {
-        var tokens = _corrector.CorrectTokens(_tokens);
-        return string.Join(" ", tokens.Select(t => t.Value));
+        _tokens = _corrector.CorrectTokens(_tokens);
+        _hasCorrectSyntax = true;
+        return _tokens;
     }
 }

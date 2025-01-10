@@ -14,9 +14,8 @@ Console.WriteLine("Original Tokens:");
 //}
 
 var parser = new Parser(tokens);
-parser.Parse();
 
-string correctedQuery = parser.CorrectSyntax();
+string correctedQuery = parser.Parse();
 Console.WriteLine("\nCorrected SQL Query:");
 Console.WriteLine(correctedQuery);
 
