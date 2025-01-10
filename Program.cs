@@ -1,22 +1,29 @@
-﻿using MySqlParser;
+﻿using System;
 
-//string sqlQuery = "SELCT `age` as 'Age, [id as [ID], [username] as [UserName] FORM users WHERE [id]= 1";
+namespace MySqlParser
+{
+    public class Program
+    {
+        private static void Main(string[] args)
+        {
+            string sqlInsert = "Iert into TEST set (id,age,username) values (1,2,\"3\")";
 
-string sqlInsert = """Iert into TEST set (id,age,username) values (1,2,"3")""";
+            var lexer = new Lexer();
+            var tokens = lexer.Tokenize(sqlInsert);
 
-var lexer = new Lexer();
-var tokens = lexer.Tokenize(sqlInsert);
+            Console.WriteLine("Original Tokens:");
+            //foreach (var token in tokens)
+            //{
+            //    Console.WriteLine(token);
+            //}
 
-Console.WriteLine("Original Tokens:");
-//foreach (var token in tokens)
-//{
-//    Console.WriteLine(token);
-//}
+            var parser = new Parser(tokens);
 
-var parser = new Parser(tokens);
+            string correctedQuery = parser.Parse();
+            Console.WriteLine("\nCorrected SQL Query:");
+            Console.WriteLine(correctedQuery);
 
-string correctedQuery = parser.Parse();
-Console.WriteLine("\nCorrected SQL Query:");
-Console.WriteLine(correctedQuery);
-
-Console.ReadLine();
+            Console.ReadLine();
+        }
+    }
+}

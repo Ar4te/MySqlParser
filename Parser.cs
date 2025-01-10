@@ -1,53 +1,54 @@
-
+using System.Collections.Generic;
 using System.Text;
 
-namespace MySqlParser;
-
-public class Parser
+namespace MySqlParser
 {
-    private List<Token> _tokens;
-    private SqlCorrector _corrector;
-    private bool _hasCorrectSyntax = false;
-
-    public List<Token> Tokens => _tokens;
-
-    public Parser(List<Token> tokens)
+    public class Parser
     {
-        _hasCorrectSyntax = false;
-        _tokens = tokens;
-        _corrector = new SqlCorrector();
-    }
+        private List<Token> _tokens;
+        private SqlCorrector _corrector;
+        private bool _hasCorrectSyntax = false;
 
-    public string Parse()
-    {
-        var tokens = _hasCorrectSyntax ? _tokens : CorrectSyntax();
-        StringBuilder @stringBuilder = new();
-        foreach (var token in tokens)
+        public List<Token> Tokens => _tokens;
+
+        public Parser(List<Token> tokens)
         {
-            if (token.Type == TokenType.Literal)
+            _hasCorrectSyntax = false;
+            _tokens = tokens;
+            _corrector = new SqlCorrector();
+        }
+
+        public string Parse()
+        {
+            var tokens = _hasCorrectSyntax ? _tokens : CorrectSyntax();
+            StringBuilder @stringBuilder = new StringBuilder();
+            foreach (var token in tokens)
             {
-                if (token.Value.GetType() == typeof(long))
+                if (token.Type == TokenType.Literal)
                 {
-                    stringBuilder.Append($" {token.Value} ");
+                    if (token.Value.GetType() == typeof(long))
+                    {
+                        stringBuilder.Append($" {token.Value} ");
+                    }
+                    else
+                    {
+                        stringBuilder.Append($" \"{token.Value}\" ");
+                    }
                 }
                 else
                 {
-                    stringBuilder.Append($" \"{token.Value}\" ");
+                    stringBuilder.Append($" {token.Value} ");
                 }
             }
-            else
-            {
-                stringBuilder.Append($" {token.Value} ");
-            }
+
+            return @stringBuilder.ToString();
         }
 
-        return @stringBuilder.ToString();
-    }
-
-    public List<Token> CorrectSyntax()
-    {
-        _tokens = _corrector.CorrectTokens(_tokens);
-        _hasCorrectSyntax = true;
-        return _tokens;
+        public List<Token> CorrectSyntax()
+        {
+            _tokens = _corrector.CorrectTokens(_tokens);
+            _hasCorrectSyntax = true;
+            return _tokens;
+        }
     }
 }

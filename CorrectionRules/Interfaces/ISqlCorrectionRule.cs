@@ -1,7 +1,10 @@
-﻿namespace MySqlParser.CorrectionRules.Interfaces;
+﻿using System.Collections.Generic;
 
-public interface ISqlCorrectionRule
+namespace MySqlParser.CorrectionRules.Interfaces
 {
-    bool AppliesTo(Token token, List<Token> context, int position);
-    Token Correct(Token token);
+    public interface ISqlCorrectionRule
+    {
+        bool AppliesTo(Token token, List<Token> context, int position);
+        Token Correct(Token token);
+    }
 }
